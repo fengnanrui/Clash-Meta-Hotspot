@@ -1,6 +1,6 @@
 <resources>
   <string name="hotspot_sharing">热点共享 VPN（root）</string>
-  <string name="hotspot_sharing_summary">请先开启此选项，再开启手机热点。启动 VPN 时授予 root。共享 IPv4，遵循 Clash 规则，并阻止热点 IPv6 绕过。停止 VPN 后可修改设置；VPN 停止时恢复普通热点路由。</string>
+  <string name="hotspot_sharing_summary">请先开启此选项，再开启手机热点。启动 VPN 时授予 root。共享 IPv4，遵循 Clash 规则，并阻止热点 IPv6 绕过。首页可随时切换共享；VPN 停止时恢复普通热点路由。</string>
   <string name="hotspot_interface">热点接口（可选）</string>
   <string name="hotspot_interface_auto">默认自动识别。识别失败时可填实际接口名称，例如 wlan1。</string>
   <string name="hotspot_status">热点共享状态（点击刷新）</string>
