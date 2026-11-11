@@ -77,18 +77,6 @@
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
                 </LinearLayout>
 
-                <Switch
-                    android:id="@+id/hotspot_switch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="56dp"
-                    android:text="@string/hotspot_sharing" />
-                <TextView
-                    android:id="@+id/hotspot_status"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="12dp" />
-
                 <com.github.kr328.clash.design.view.LargeActionCard
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -101,6 +89,59 @@
                     app:text="@{clashRunning ? @string/running : @string/stopped}">
                     <requestFocus />
                 </com.github.kr328.clash.design.view.LargeActionCard>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/hotspot_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/main_card_margin_vertical"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardBackgroundColor="?attr/colorSurface"
+                    app:cardCornerRadius="@dimen/large_action_card_radius"
+                    app:cardElevation="@dimen/large_action_card_elevation">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/large_action_card_min_height"
+                        android:gravity="center_vertical"
+                        android:paddingVertical="@dimen/large_item_padding_vertical"
+                        android:paddingEnd="@dimen/large_item_tailing_margin_horizontal"
+                        android:orientation="horizontal">
+                        <ImageView
+                            android:layout_width="@dimen/large_item_header_component_size"
+                            android:layout_height="@dimen/large_item_header_component_size"
+                            android:layout_marginHorizontal="@dimen/large_item_header_margin_horizontal"
+                            android:importantForAccessibility="no"
+                            app:srcCompat="@drawable/ic_hotspot_share"
+                            app:tint="?android:attr/textColorPrimary" />
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="12dp"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/hotspot_home_title"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
+                            <TextView
+                                android:id="@+id/hotspot_status"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/large_item_text_margin"
+                                android:textColor="?android:attr/textColorSecondary"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+                        </LinearLayout>
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/hotspot_switch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="48dp"
+                            android:contentDescription="@string/hotspot_home_title"
+                            app:useMaterialThemeColors="true" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
                 <com.github.kr328.clash.design.view.LargeActionCard
                     android:layout_width="match_parent"

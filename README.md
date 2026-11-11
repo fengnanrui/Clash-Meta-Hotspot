@@ -2,7 +2,7 @@
 
 基于 **MetaCubeX/ClashMetaForAndroid** 的非官方 Android 修改版，面向已 root 手机，研究将 Clash VPN 网络共享给手机热点连接设备的实现。项目名称沿用 `Clash-Meta-Hotpoint`；应用安装名称为 **Clash Meta Hotspot**。
 
-当前项目版本：**1.0.0**。本项目版本独立于上游版本，1.0.0 并不代表上游 Clash Meta 的版本。
+当前项目版本：**1.0.1**。本项目版本独立于上游版本，1.0.0 并不代表上游 Clash Meta 的版本。
 
 ## 上游来源与致谢
 
@@ -13,6 +13,10 @@
 - 原始上游 README 保存在 [docs/UPSTREAM-README.md](docs/UPSTREAM-README.md)。第三方依赖以对应模块自带许可证为准。
 
 本仓库是个人维护的衍生项目，不是 MetaCubeX、Clash Meta、mihomo 或 Kr328 的官方发行版，也不代表上述维护者。感谢原作者和社区的持续贡献；本项目只对自己的增量修改负责，不将上游成果宣称为原创。
+
+## 1.0.1 界面优化
+
+首页共享入口改为与现有卡片相同的圆角、阴影、图标对齐与文字样式；使用 Material 开关，支持点击整张卡片切换。状态文案按系统语言显示，详细诊断仍在网络设置中查看。
 
 ## 1.0.0 修改范围
 
@@ -26,7 +30,7 @@
 
 ## 下载与安装
 
-从本仓库 [Releases](https://github.com/fengnanrui/Clash-Meta-Hotpoint/releases) 下载 `v1.0.0` 的 ARM64 APK。包名为 `com.github.metacubex.clash.hotspot`；本版仅发布 `arm64-v8a`。
+从本仓库 [Releases](https://github.com/fengnanrui/Clash-Meta-Hotpoint/releases) 下载 `v1.0.1` 的 ARM64 APK。包名为 `com.github.metacubex.clash.hotspot`；本版仅发布 `arm64-v8a`。
 
 首次安装需要自行导入合法获得的订阅或配置。本项目不提供代理节点、账号、订阅服务或网络接入承诺。请保留原应用配置备份，两个应用的数据不会自动互通。系统同一时间通常只能使用一个 VPN 服务，使用本修改版前应停止其他 VPN 应用。
 
@@ -58,7 +62,7 @@
 ```sh
 git clone --recurse-submodules https://github.com/fengnanrui/Clash-Meta-Hotpoint.git
 cd Clash-Meta-Hotpoint
-git checkout v1.0.0
+git checkout v1.0.1
 git submodule update --init --recursive
 ```
 
@@ -77,7 +81,7 @@ python3 -m unittest discover -s tests -v
 ./gradlew :app:assembleMetaRelease -PtargetAbis=arm64-v8a
 ```
 
-构建需要下载 Go/Maven 依赖和 geo 数据。仅在已准备好四个 geo 数据文件时，才可用 `-x :app:downloadGeoFiles` 跳过下载。版本显示为 1.0.0，内部 versionCode 保持递增以支持覆盖前期测试包。构建细节参见源代码，旧实验版说明仅作为历史记录。
+构建需要下载 Go/Maven 依赖和 geo 数据。仅在已准备好四个 geo 数据文件时，才可用 `-x :app:downloadGeoFiles` 跳过下载。版本显示为 1.0.1，内部 versionCode 保持递增以支持覆盖前期测试包。构建细节参见源代码，旧实验版说明仅作为历史记录。
 
 ## 许可证与再分发
 

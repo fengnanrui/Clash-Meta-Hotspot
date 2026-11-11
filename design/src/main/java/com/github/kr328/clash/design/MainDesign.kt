@@ -34,7 +34,14 @@ class MainDesign(context: Context) : Design<MainDesign.Request>(context) {
 
     suspend fun setHotspot(enabled: Boolean, status: String) = withContext(Dispatchers.Main) {
         binding.hotspotSwitch.isChecked = enabled
-        binding.hotspotStatus.text = status
+        binding.hotspotStatus.text = context.getString(when {
+            !enabled -> R.string.hotspot_home_off
+            status.contains("Start VPN mode") -> R.string.hotspot_home_wait
+            status.contains("Rules installed") -> R.string.hotspot_home_active
+            status.contains("Failed") || status.contains("exit") || status.contains("失败") -> R.string.hotspot_home_error
+            else -> R.string.hotspot_home_pending
+        })
+        binding.hotspotCard.contentDescription = context.getString(R.string.hotspot_home_title) + ", " + binding.hotspotStatus.text
     }
 
     suspend fun setProfileName(name: String?) {
@@ -86,6 +93,7 @@ class MainDesign(context: Context) : Design<MainDesign.Request>(context) {
 
     init {
         binding.self = this
+        binding.hotspotCard.setOnClickListener { request(Request.ToggleHotspot) }
         binding.hotspotSwitch.setOnClickListener { request(Request.ToggleHotspot) }
 
         binding.colorClashStarted = context.resolveThemedColor(com.google.android.material.R.attr.colorPrimary)

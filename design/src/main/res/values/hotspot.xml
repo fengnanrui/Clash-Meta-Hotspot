@@ -5,4 +5,10 @@
   <string name="hotspot_interface_auto">Detect automatically. Enter an interface such as wlan1 only if detection fails.</string>
   <string name="hotspot_status">Hotspot sharing status (tap to refresh)</string>
   <string name="hotspot_status_idle">Start VPN with hotspot sharing enabled to request root and install sharing rules.</string>
+    <string name="hotspot_home_title">VPN hotspot</string>
+    <string name="hotspot_home_off">Off · Root required</string>
+    <string name="hotspot_home_wait">On · Start VPN to share</string>
+    <string name="hotspot_home_active">Sharing · IPv4</string>
+    <string name="hotspot_home_error">Check sharing status in Network settings</string>
+    <string name="hotspot_home_pending">On · Waiting for hotspot or root</string>
 </resources>

@@ -5,4 +5,10 @@
   <string name="hotspot_interface_auto">默认自动识别。识别失败时可填实际接口名称，例如 wlan1。</string>
   <string name="hotspot_status">热点共享状态（点击刷新）</string>
   <string name="hotspot_status_idle">启用热点共享后启动 VPN，将请求 root 并安装共享规则。</string>
+    <string name="hotspot_home_title">热点共享</string>
+    <string name="hotspot_home_off">未开启 · 需要 Root 权限</string>
+    <string name="hotspot_home_wait">已开启 · 请启动 VPN</string>
+    <string name="hotspot_home_active">正在共享 · IPv4</string>
+    <string name="hotspot_home_error">共享异常 · 请在网络设置查看详情</string>
+    <string name="hotspot_home_pending">已开启 · 等待热点或 Root 授权</string>
 </resources>
