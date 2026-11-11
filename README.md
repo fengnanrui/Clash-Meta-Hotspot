@@ -1,6 +1,6 @@
-# Clash-Meta-Hotpoint
+# Clash-Meta-Hotspot
 
-基于 **MetaCubeX/ClashMetaForAndroid** 的非官方 Android 修改版，面向已 root 手机，研究将 Clash VPN 网络共享给手机热点连接设备的实现。项目名称沿用 `Clash-Meta-Hotpoint`；应用安装名称为 **Clash Meta Hotspot**。
+基于 **MetaCubeX/ClashMetaForAndroid** 的非官方 Android 修改版，面向已 root 手机，研究将 Clash VPN 网络共享给手机热点连接设备的实现。项目名称为 `Clash-Meta-Hotspot`；应用安装名称为 **Clash Meta Hotspot**。
 
 当前项目版本：**1.0.1**。本项目版本独立于上游版本，1.0.0 并不代表上游 Clash Meta 的版本。
 
@@ -30,7 +30,7 @@
 
 ## 下载与安装
 
-从本仓库 [Releases](https://github.com/fengnanrui/Clash-Meta-Hotpoint/releases) 下载 `v1.0.1` 的 ARM64 APK。包名为 `com.github.metacubex.clash.hotspot`；本版仅发布 `arm64-v8a`。
+从本仓库 [Releases](https://github.com/fengnanrui/Clash-Meta-Hotspot/releases) 下载 `v1.0.1` 的 ARM64 APK。包名为 `com.github.metacubex.clash.hotspot`；本版仅发布 `arm64-v8a`。
 
 首次安装需要自行导入合法获得的订阅或配置。本项目不提供代理节点、账号、订阅服务或网络接入承诺。请保留原应用配置备份，两个应用的数据不会自动互通。系统同一时间通常只能使用一个 VPN 服务，使用本修改版前应停止其他 VPN 应用。
 
@@ -60,8 +60,8 @@
 ## 源码构建
 
 ```sh
-git clone --recurse-submodules https://github.com/fengnanrui/Clash-Meta-Hotpoint.git
-cd Clash-Meta-Hotpoint
+git clone --recurse-submodules https://github.com/fengnanrui/Clash-Meta-Hotspot.git
+cd Clash-Meta-Hotspot
 git checkout v1.0.1
 git submodule update --init --recursive
 ```
