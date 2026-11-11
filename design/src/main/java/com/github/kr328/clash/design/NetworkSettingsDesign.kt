@@ -57,6 +57,34 @@ class NetworkSettingsDesign(
             category(R.string.vpn_service_options)
 
             switch(
+                value = srvStore::hotspotSharing,
+                title = R.string.hotspot_sharing,
+                summary = R.string.hotspot_sharing_summary,
+                configure = vpnDependencies::add,
+            )
+
+            editableText(
+                value = srvStore::hotspotInterface,
+                adapter = object : NullableTextAdapter<String> {
+                    override fun from(value: String): String = value
+                    override fun to(text: String?): String = text?.trim().orEmpty()
+                },
+                title = R.string.hotspot_interface,
+                empty = R.string.hotspot_interface_auto,
+                configure = vpnDependencies::add,
+            )
+
+            clickable(title = R.string.hotspot_status) {
+                clicked {
+                    launch {
+                        showToast(srvStore.hotspotSharingStatus.ifBlank {
+                            context.getString(R.string.hotspot_status_idle)
+                        }, ToastDuration.Long)
+                    }
+                }
+            }
+
+            switch(
                 value = srvStore::bypassPrivateNetwork,
                 title = R.string.bypass_private_network,
                 summary = R.string.bypass_private_network_summary,

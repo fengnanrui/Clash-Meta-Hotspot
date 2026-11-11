@@ -56,6 +56,12 @@ class ServiceStore(context: Context) {
         defaultValue = false
     )
 
+    var hotspotSharing by store.boolean(key = "hotspot_sharing", defaultValue = false)
+
+    var hotspotInterface by store.string(key = "hotspot_interface", defaultValue = "")
+
+    var hotspotSharingStatus by store.string(key = "hotspot_sharing_status", defaultValue = "")
+
     var tunStackMode by store.string(
         key = "tun_stack_mode",
         defaultValue = "mips"

@@ -1,0 +1,8 @@
+<resources>
+  <string name="hotspot_sharing">Share VPN over hotspot (root)</string>
+  <string name="hotspot_sharing_summary">Enable before turning on hotspot. Grant root when starting VPN. Shares IPv4 using Clash rules; blocks hotspot IPv6. Stop VPN to change this option. VPN stop restores ordinary hotspot routing.</string>
+  <string name="hotspot_interface">Hotspot interface (optional)</string>
+  <string name="hotspot_interface_auto">Detect automatically. Enter an interface such as wlan1 only if detection fails.</string>
+  <string name="hotspot_status">Hotspot sharing status (tap to refresh)</string>
+  <string name="hotspot_status_idle">Start VPN with hotspot sharing enabled to request root and install sharing rules.</string>
+</resources>

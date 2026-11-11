@@ -46,6 +46,9 @@ class TunService : VpnService(), CoroutineScope by CoroutineScope(Dispatchers.De
         try {
             tun.open()
 
+            if (store.hotspotSharing)
+                install(HotspotSharingModule(self))
+
             while (isActive) {
                 val quit = select<Boolean> {
                     close.onEvent {

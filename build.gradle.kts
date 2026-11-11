@@ -28,6 +28,8 @@ subprojects {
     }
 
     val isApp = name == "app"
+    val targetAbis = (findProperty("targetAbis") as? String)?.split(",")
+        ?: listOf("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
 
     apply(plugin = if (isApp) "com.android.application" else "com.android.library")
 
@@ -58,19 +60,19 @@ subprojects {
             minSdk = 21
             targetSdk = 35
 
-            versionName = "2.11.35"
+            versionName = "2.11.35-hotspot.1"
             versionCode = 211035
 
             resValue("string", "release_name", "v$versionName")
             resValue("integer", "release_code", "$versionCode")
 
             ndk {
-                abiFilters += listOf("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
+                abiFilters += targetAbis
             }
 
             externalNativeBuild {
                 cmake {
-                    abiFilters("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
+                    abiFilters(*targetAbis.toTypedArray())
                 }
             }
 
@@ -125,8 +127,8 @@ subprojects {
 
                 buildConfigField("boolean", "PREMIUM", "Boolean.parseBoolean(\"false\")")
 
-                resValue("string", "launch_name", "@string/launch_name_meta")
-                resValue("string", "application_name", "@string/application_name_meta")
+                resValue("string", "launch_name", "Clash Meta Hotspot")
+                resValue("string", "application_name", "Clash Meta Hotspot")
 
                 if (isApp && !removeSuffix) {
                     applicationIdSuffix = ".meta"
@@ -151,7 +153,7 @@ subprojects {
                         keystore.inputStream().use(this::load)
                     }
 
-                    storeFile = rootProject.file("release.keystore")
+                    storeFile = rootProject.file(prop.getProperty("keystore.path") ?: "release.keystore")
                     storePassword = prop.getProperty("keystore.password")!!
                     keyAlias = prop.getProperty("key.alias")!!
                     keyPassword = prop.getProperty("key.password")!!
@@ -188,7 +190,7 @@ subprojects {
                     isEnable = true
                     isUniversalApk = true
                     reset()
-                    include("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
+                    include(*targetAbis.toTypedArray())
                 }
             }
         }
