@@ -52,6 +52,11 @@ class MainActivity : BaseActivity<MainDesign>() {
                 }
                 design.requests.onReceive {
                     when (it) {
+                        MainDesign.Request.ToggleHotspot -> {
+                            val store = com.github.kr328.clash.service.store.ServiceStore(this@MainActivity)
+                            store.hotspotSharing = !store.hotspotSharing
+                            design.fetchHotspot()
+                        }
                         MainDesign.Request.ToggleStatus -> {
                             if (clashRunning)
                                 stopClashService()
@@ -79,16 +84,25 @@ class MainActivity : BaseActivity<MainDesign>() {
                             design.showAbout(queryAppVersionName())
                     }
                 }
-                if (clashRunning) {
-                    ticker.onReceive {
-                        design.fetchTraffic()
-                    }
+                ticker.onReceive {
+                    if (clashRunning) design.fetchTraffic()
+                    design.fetchHotspot()
                 }
             }
         }
     }
 
+    private suspend fun MainDesign.fetchHotspot() {
+        val store = com.github.kr328.clash.service.store.ServiceStore(this@MainActivity)
+        setHotspot(store.hotspotSharing, when {
+            !store.hotspotSharing -> "热点共享已关闭 / Sharing off"
+            !clashRunning || !uiStore.enableVpn -> "请启动 VPN 模式 / Start VPN mode"
+            else -> store.hotspotSharingStatus.ifBlank { "等待共享服务 / Waiting for sharing service" }
+        })
+    }
+
     private suspend fun MainDesign.fetch() {
+        fetchHotspot()
         setClashRunning(clashRunning)
 
         val state = withClash {

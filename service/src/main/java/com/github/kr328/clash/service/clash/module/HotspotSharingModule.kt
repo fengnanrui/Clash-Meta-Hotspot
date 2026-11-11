@@ -13,6 +13,25 @@ import java.util.Date
 class HotspotSharingModule(service: Service) : Module<Unit>(service) {
     override suspend fun run() = coroutineScope {
         val store = ServiceStore(service)
+        var session: Job? = null
+        var previous = false
+        try {
+            while (isActive) {
+                val enabled = store.hotspotSharing
+                if (enabled != previous) {
+                    session?.cancelAndJoin()
+                    session = if (enabled) launch { runSession() } else null
+                    previous = enabled
+                }
+                delay(500)
+            }
+        } finally {
+            withContext(NonCancellable) { session?.cancelAndJoin() }
+        }
+    }
+
+    private suspend fun runSession() = coroutineScope {
+        val store = ServiceStore(service)
         val lease = File.createTempFile("hotspot-", ".lease", service.filesDir)
         val script = File(service.filesDir, "hotspot-sharing.sh")
         var process: java.lang.Process? = null

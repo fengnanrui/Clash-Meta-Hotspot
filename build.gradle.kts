@@ -60,8 +60,8 @@ subprojects {
             minSdk = 21
             targetSdk = 35
 
-            versionName = "2.11.35-hotspot.1"
-            versionCode = 211035
+            versionName = "1.0.0"
+            versionCode = 211036
 
             resValue("string", "release_name", "v$versionName")
             resValue("integer", "release_code", "$versionCode")

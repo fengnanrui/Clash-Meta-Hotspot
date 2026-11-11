@@ -56,13 +56,6 @@ class NetworkSettingsDesign(
 
             category(R.string.vpn_service_options)
 
-            switch(
-                value = srvStore::hotspotSharing,
-                title = R.string.hotspot_sharing,
-                summary = R.string.hotspot_sharing_summary,
-                configure = vpnDependencies::add,
-            )
-
             editableText(
                 value = srvStore::hotspotInterface,
                 adapter = object : NullableTextAdapter<String> {

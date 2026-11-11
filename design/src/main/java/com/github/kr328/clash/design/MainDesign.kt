@@ -16,6 +16,7 @@ import kotlinx.coroutines.withContext
 class MainDesign(context: Context) : Design<MainDesign.Request>(context) {
     enum class Request {
         ToggleStatus,
+        ToggleHotspot,
         OpenProxy,
         OpenProfiles,
         OpenProviders,
@@ -30,6 +31,11 @@ class MainDesign(context: Context) : Design<MainDesign.Request>(context) {
 
     override val root: View
         get() = binding.root
+
+    suspend fun setHotspot(enabled: Boolean, status: String) = withContext(Dispatchers.Main) {
+        binding.hotspotSwitch.isChecked = enabled
+        binding.hotspotStatus.text = status
+    }
 
     suspend fun setProfileName(name: String?) {
         withContext(Dispatchers.Main) {
@@ -80,6 +86,7 @@ class MainDesign(context: Context) : Design<MainDesign.Request>(context) {
 
     init {
         binding.self = this
+        binding.hotspotSwitch.setOnClickListener { request(Request.ToggleHotspot) }
 
         binding.colorClashStarted = context.resolveThemedColor(com.google.android.material.R.attr.colorPrimary)
         binding.colorClashStopped = context.resolveThemedColor(R.attr.colorClashStopped)

@@ -77,6 +77,18 @@
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
                 </LinearLayout>
 
+                <Switch
+                    android:id="@+id/hotspot_switch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="56dp"
+                    android:text="@string/hotspot_sharing" />
+                <TextView
+                    android:id="@+id/hotspot_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="12dp" />
+
                 <com.github.kr328.clash.design.view.LargeActionCard
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
