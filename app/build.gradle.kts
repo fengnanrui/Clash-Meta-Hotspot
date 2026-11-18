@@ -32,41 +32,37 @@ tasks.getByName("clean", type = Delete::class) {
     delete(file("release"))
 }
 
-val geoFilesDownloadDir = "src/main/assets"
+val geoFilesDownloadDir = file("src/main/assets")
+val geoFiles = mapOf(
+    "geoip.metadb" to "geoip.metadb",
+    "geosite.dat" to "geosite.dat",
+    "GeoLite2-ASN.mmdb" to "ASN.mmdb",
+    "BundleMRS.7z" to "BundleMRS.7z",
+)
 
-task("downloadGeoFiles") {
-
-    val geoFilesUrls = mapOf(
-        "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.metadb" to "geoip.metadb",
-        "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat" to "geosite.dat",
-        // "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/country.mmdb" to "country.mmdb",
-        "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/GeoLite2-ASN.mmdb" to "ASN.mmdb",
-        "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/BundleMRS.7z" to "BundleMRS.7z",
-    )
-
+val downloadGeoFiles = tasks.register("downloadGeoFiles") {
     doLast {
-        geoFilesUrls.forEach { (downloadUrl, outputFileName) ->
-            val url = URL(downloadUrl)
-            val outputPath = file("$geoFilesDownloadDir/$outputFileName")
-            outputPath.parentFile.mkdirs()
-            url.openStream().use { input ->
-                Files.copy(input, outputPath.toPath(), StandardCopyOption.REPLACE_EXISTING)
-                println("$outputFileName downloaded to $outputPath")
+        geoFilesDownloadDir.mkdirs()
+        geoFiles.forEach { (remoteName, localName) ->
+            val url = URL("https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/$remoteName")
+            val target = geoFilesDownloadDir.resolve(localName).toPath()
+            val pending = Files.createTempFile(temporaryDir.toPath(), localName, ".part")
+            try {
+                url.openStream().use { input ->
+                    Files.copy(input, pending, StandardCopyOption.REPLACE_EXISTING)
+                }
+                Files.move(pending, target, StandardCopyOption.REPLACE_EXISTING)
+            } finally {
+                Files.deleteIfExists(pending)
             }
         }
     }
 }
 
-afterEvaluate {
-    val downloadGeoFilesTask = tasks["downloadGeoFiles"]
-
-    tasks.forEach {
-        if (it.name.startsWith("assemble")) {
-            it.dependsOn(downloadGeoFilesTask)
-        }
-    }
+tasks.matching { it.name.startsWith("merge") && it.name.endsWith("Assets") }.configureEach {
+    dependsOn(downloadGeoFiles)
 }
 
-tasks.getByName("clean", type = Delete::class) {
-    delete(file(geoFilesDownloadDir))
+tasks.named<Delete>("clean") {
+    delete(geoFiles.values.map { geoFilesDownloadDir.resolve(it) })
 }

@@ -15,6 +15,7 @@ import androidx.core.graphics.drawable.IconCompat
 import com.github.kr328.clash.common.constants.Intents
 import com.github.kr328.clash.common.util.intent
 import com.github.kr328.clash.common.util.ticker
+import com.github.kr328.clash.service.store.ServiceStore
 import com.github.kr328.clash.design.MainDesign
 import com.github.kr328.clash.design.ui.ToastDuration
 import com.github.kr328.clash.util.startClashService
@@ -30,6 +31,8 @@ import java.util.concurrent.TimeUnit
 import com.github.kr328.clash.design.R as DesignR
 
 class MainActivity : BaseActivity<MainDesign>() {
+    private val serviceStore by lazy { ServiceStore(this) }
+
     override suspend fun main() {
         val design = MainDesign(this)
 
@@ -53,8 +56,7 @@ class MainActivity : BaseActivity<MainDesign>() {
                 design.requests.onReceive {
                     when (it) {
                         MainDesign.Request.ToggleHotspot -> {
-                            val store = com.github.kr328.clash.service.store.ServiceStore(this@MainActivity)
-                            store.hotspotSharing = !store.hotspotSharing
+                            serviceStore.hotspotSharing = !serviceStore.hotspotSharing
                             design.fetchHotspot()
                         }
                         MainDesign.Request.ToggleStatus -> {
@@ -85,19 +87,21 @@ class MainActivity : BaseActivity<MainDesign>() {
                     }
                 }
                 ticker.onReceive {
-                    if (clashRunning) design.fetchTraffic()
-                    design.fetchHotspot()
+                    if (clashRunning) {
+                        design.fetchTraffic()
+                        design.fetchHotspot()
+                    }
                 }
             }
         }
     }
 
     private suspend fun MainDesign.fetchHotspot() {
-        val store = com.github.kr328.clash.service.store.ServiceStore(this@MainActivity)
-        setHotspot(store.hotspotSharing, when {
-            !store.hotspotSharing -> "热点共享已关闭 / Sharing off"
+        val enabled = serviceStore.hotspotSharing
+        setHotspot(enabled, when {
+            !enabled -> "热点共享已关闭 / Sharing off"
             !clashRunning || !uiStore.enableVpn -> "请启动 VPN 模式 / Start VPN mode"
-            else -> store.hotspotSharingStatus.ifBlank { "等待共享服务 / Waiting for sharing service" }
+            else -> serviceStore.hotspotSharingStatus.ifBlank { "等待共享服务 / Waiting for sharing service" }
         })
     }
 

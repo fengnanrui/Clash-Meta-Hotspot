@@ -32,7 +32,7 @@ class HotspotSharingModule(service: Service) : Module<Unit>(service) {
 
     private suspend fun runSession() = coroutineScope {
         val store = ServiceStore(service)
-        val lease = File.createTempFile("hotspot-", ".lease", service.filesDir)
+        var lease: File? = null
         val script = File(service.filesDir, "hotspot-sharing.sh")
         var process: java.lang.Process? = null
         fun status(message: String) {
@@ -40,6 +40,8 @@ class HotspotSharingModule(service: Service) : Module<Unit>(service) {
             Log.i("Hotspot sharing: $message")
         }
         try {
+            val sessionLease = File.createTempFile("hotspot-", ".lease", service.filesDir)
+            lease = sessionLease
             val iface = store.hotspotInterface
             require(iface.isEmpty() || iface.matches(Regex("[a-zA-Z0-9_.-]{1,15}"))) {
                 "Invalid hotspot interface"
@@ -53,16 +55,22 @@ class HotspotSharingModule(service: Service) : Module<Unit>(service) {
             // Paths come from the app's private files directory; never interpolate user shell code.
             fun quote(value: String) = "'" + value.replace("'", "'\\''") + "'"
             val command = listOf("sh", quote(script.path), Process.myPid().toString(),
-                quote(lease.path), quote(iface)).joinToString(" ")
+                quote(sessionLease.path), quote(iface)).joinToString(" ")
             val shell = withContext(Dispatchers.IO) {
                 ProcessBuilder("su", "-c", command).redirectErrorStream(true).start()
             }
             process = shell
+            var failure: String? = null
             val reader = launch(Dispatchers.IO) {
                 shell.inputStream.bufferedReader().useLines { lines ->
                     lines.forEach { line ->
-                        if (line.startsWith("CMFA_STATUS: ")) status(line.removePrefix("CMFA_STATUS: "))
-                        else Log.w("Hotspot root: $line")
+                        if (line.startsWith("CMFA_STATUS: ")) {
+                            val message = line.removePrefix("CMFA_STATUS: ")
+                            if (message.startsWith("Failed")) failure = message
+                            if (failure == null || message == failure) status(message)
+                        } else {
+                            Log.w("Hotspot root: $line")
+                        }
                     }
                 }
             }
@@ -70,9 +78,11 @@ class HotspotSharingModule(service: Service) : Module<Unit>(service) {
                 while (isActive && reader.isActive) delay(500)
                 reader.join()
                 val result = withContext(Dispatchers.IO) { shell.waitFor() }
-                status("Stopped (exit $result). Check root authorization and logs / 已停止，请检查 root 授权和日志")
+                if (result != 0 && failure == null) {
+                    status("Failed (exit $result). Check root authorization and logs / 共享失败，请检查 root 授权和日志")
+                }
             } finally {
-                lease.delete()
+                sessionLease.delete()
                 // The root watchdog checks both this lease and the service PID, including on crashes.
                 withContext(NonCancellable) {
                     withTimeoutOrNull(10_000) { reader.join() }
@@ -85,7 +95,7 @@ class HotspotSharingModule(service: Service) : Module<Unit>(service) {
         } catch (e: Exception) {
             status("Failed / 失败: ${e.message}")
         } finally {
-            lease.delete()
+            lease?.delete()
             process?.destroy()
         }
     }

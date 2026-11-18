@@ -11,6 +11,7 @@ import com.github.kr328.clash.common.util.PatternFileName
 import com.github.kr328.clash.service.document.*
 import kotlinx.coroutines.runBlocking
 import java.io.FileNotFoundException
+import java.io.IOException
 import android.provider.DocumentsContract.Document as D
 
 class FilesProvider : DocumentsProvider() {
@@ -77,7 +78,8 @@ class FilesProvider : DocumentsProvider() {
                 throw FileNotFoundException("invalid path $documentId")
             }
 
-            document.file.deleteRecursively()
+            if (!document.file.deleteRecursively())
+                throw IOException("Unable to delete $documentId")
         }
     }
 
@@ -105,7 +107,8 @@ class FilesProvider : DocumentsProvider() {
                 throw IllegalArgumentException("unable to rename $document")
             }
 
-            document.file.renameTo(parent.resolve(name))
+            if (!document.file.renameTo(parent.resolve(name)))
+                throw IOException("Unable to rename $documentId to $name")
 
             path.copy(relative = path.relative.dropLast(1) + name).toString()
         }

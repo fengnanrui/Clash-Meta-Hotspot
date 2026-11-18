@@ -7,7 +7,8 @@
 ## 上游来源与致谢
 
 - 直接上游：[MetaCubeX/ClashMetaForAndroid](https://github.com/MetaCubeX/ClashMetaForAndroid)，Android 界面、VPN 服务、配置管理与主要应用代码均来自该项目。
-- 本版同步上游 `main`，提交 `215e017ae88ac2a1edf24fdb520512c1423c89f4`，对应上游 **2.11.37**，同步日期 2026-11-12。
+- 当前开发分支已合入上游 [6e635124](https://github.com/MetaCubeX/ClashMetaForAndroid/commit/6e635124cc72f8c102b7e76d849c384deba28b3f)（2026-11-18）。开启「绕过私有网络」时，VPN 路由补入 `0.0.0.0/32`，供 Android 热点识别 VPN 上游。
+- 已发布的 v1.0.1 同步上游 `main`，提交 `215e017ae88ac2a1edf24fdb520512c1423c89f4`，对应上游 **2.11.37**，同步日期 2026-11-12。
 - 核心：[MetaCubeX/mihomo](https://github.com/MetaCubeX/mihomo)，子模块固定于 `0455d0d28c4526937380505153e65a843d8612e8`。
 - 项目历史中的 Clash for Android / Kr328 及其他原作者贡献、版权声明和许可证继续保留。
 - 原始上游 README 保存在 [docs/UPSTREAM-README.md](docs/UPSTREAM-README.md)。第三方依赖以对应模块自带许可证为准。
