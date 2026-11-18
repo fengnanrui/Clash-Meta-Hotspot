@@ -1,15 +1,24 @@
 name: Release Hotspot APK
 
 on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing version tag to build and publish
+        required: true
+        type: string
   push:
     tags:
       - 'v[0-9]*'
+
+env:
+  RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
 
 permissions:
   contents: read
 
 concurrency:
-  group: release-${{ github.ref }}
+  group: release-${{ inputs.tag || github.ref_name }}
   cancel-in-progress: false
 
 jobs:
@@ -18,6 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: refs/tags/${{ env.RELEASE_TAG }}
           submodules: recursive
           persist-credentials: false
       - uses: actions/setup-java@v4
@@ -29,12 +39,12 @@ jobs:
           gradle-version: '8.11.1'
       - name: Check tag and test hotspot rules
         run: |
-          [[ "$GITHUB_REF_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
-          grep -Fq "versionName = \"${GITHUB_REF_NAME#v}\"" build.gradle.kts
+          [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          grep -Fq "versionName = \"${RELEASE_TAG#v}\"" build.gradle.kts
           python3 -m unittest discover -s tests -v
       - name: Prepare Android SDK and patched Go
         run: |
-          sdkmanager 'platforms;android-35' 'build-tools;35.0.0' 'ndk;29.0.14206865' 'cmake;3.22.1'
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'platforms;android-35' 'build-tools;35.0.0' 'ndk;29.0.14206865' 'cmake;3.22.1'
           mkdir -p "$RUNNER_TEMP/cmfa-go"
           curl -fsSL --retry 3 https://github.com/MetaCubeX/go/releases/download/build/go1.26.linux-amd64.tar.gz -o "$RUNNER_TEMP/cmfa-go.tar.gz"
           echo "f2f3aab2fc72a4d4dd0123e088ed6611526b50b4e82d4c234ec24772ffb16981  $RUNNER_TEMP/cmfa-go.tar.gz" | sha256sum -c
@@ -60,7 +70,7 @@ jobs:
           gradle --no-daemon :app:assembleMetaRelease -PtargetAbis=arm64-v8a --max-workers=2
       - name: Verify APK and assemble source archive
         run: |
-          version=${GITHUB_REF_NAME#v}
+          version=${RELEASE_TAG#v}
           prefix=Clash-Meta-Hotspot-$version
           mkdir dist
           apk="dist/$prefix-arm64-v8a.apk"
@@ -97,4 +107,4 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           (cd dist && sha256sum -c SHA256SUMS)
-          gh release create "$GITHUB_REF_NAME" dist/* --repo "$GITHUB_REPOSITORY" --verify-tag --title "Clash-Meta-Hotspot ${GITHUB_REF_NAME#v}" --generate-notes
+          gh release create "$RELEASE_TAG" dist/* --repo "$GITHUB_REPOSITORY" --verify-tag --title "Clash-Meta-Hotspot ${RELEASE_TAG#v}" --generate-notes
