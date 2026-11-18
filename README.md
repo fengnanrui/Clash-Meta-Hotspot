@@ -2,7 +2,7 @@
 
 基于 **MetaCubeX/ClashMetaForAndroid** 的非官方 Android 修改版，面向已 root 手机，研究将 Clash VPN 网络共享给手机热点连接设备的实现。项目名称为 `Clash-Meta-Hotspot`；应用安装名称为 **Clash Meta Hotspot**。
 
-当前项目版本：**1.0.1**。本项目版本独立于上游版本，1.0.0 并不代表上游 Clash Meta 的版本。
+当前项目版本：**1.0.2**。本项目版本独立于上游版本，1.0.0 并不代表上游 Clash Meta 的版本。
 
 ## 上游来源与致谢
 
@@ -14,6 +14,14 @@
 - 原始上游 README 保存在 [docs/UPSTREAM-README.md](docs/UPSTREAM-README.md)。第三方依赖以对应模块自带许可证为准。
 
 本仓库是个人维护的衍生项目，不是 MetaCubeX、Clash Meta、mihomo 或 Kr328 的官方发行版，也不代表上述维护者。感谢原作者和社区的持续贡献；本项目只对自己的增量修改负责，不将上游成果宣称为原创。
+
+## 1.0.2 热点路由与自动发布
+
+热点更换 IPv4 网段后自动重建路由。VPN 回程规则只匹配热点客户端网段；启用「绕过私有网络」时合入了上游的热点识别修复。首页在 VPN 停止时减少轮询，网络设置保留 root 命令报告的失败原因。
+
+发布由 GitHub Actions 的 **Release Hotspot APK** 工作流完成。维护者更新版本号、递增 versionCode，然后推送与版本号一致的 `vX.Y.Z` 标签。工作流运行回归测试、构建 ARM64 APK、核对包名和维护者证书，并发布 APK、包含 mihomo 子模块的源码包和 SHA256SUMS。签名材料通过本仓库的加密 Secrets 提供。
+
+同包名、同签名的旧 Hotspot 版可以直接覆盖安装。升级会沿用原配置、当前选中的配置与节点选择，安装前可自行备份。其他包名的 Clash 应用使用独立的数据目录。
 
 ## 1.0.1 界面优化
 
@@ -31,7 +39,7 @@
 
 ## 下载与安装
 
-从本仓库 [Releases](https://github.com/fengnanrui/Clash-Meta-Hotspot/releases) 下载 `v1.0.1` 的 ARM64 APK。包名为 `com.github.metacubex.clash.hotspot`；本版仅发布 `arm64-v8a`。
+从本仓库 [Releases](https://github.com/fengnanrui/Clash-Meta-Hotspot/releases) 下载 `v1.0.2` 的 ARM64 APK。包名为 `com.github.metacubex.clash.hotspot`；本版仅发布 `arm64-v8a`。
 
 首次安装需要自行导入合法获得的订阅或配置。本项目不提供代理节点、账号、订阅服务或网络接入承诺。请保留原应用配置备份，两个应用的数据不会自动互通。系统同一时间通常只能使用一个 VPN 服务，使用本修改版前应停止其他 VPN 应用。
 
@@ -63,7 +71,7 @@
 ```sh
 git clone --recurse-submodules https://github.com/fengnanrui/Clash-Meta-Hotspot.git
 cd Clash-Meta-Hotspot
-git checkout v1.0.1
+git checkout v1.0.2
 git submodule update --init --recursive
 ```
 
@@ -82,7 +90,7 @@ python3 -m unittest discover -s tests -v
 ./gradlew :app:assembleMetaRelease -PtargetAbis=arm64-v8a
 ```
 
-构建需要下载 Go/Maven 依赖和 geo 数据。仅在已准备好四个 geo 数据文件时，才可用 `-x :app:downloadGeoFiles` 跳过下载。版本显示为 1.0.1，内部 versionCode 保持递增以支持覆盖前期测试包。构建细节参见源代码，旧实验版说明仅作为历史记录。
+构建需要下载 Go/Maven 依赖和 geo 数据。仅在已准备好四个 geo 数据文件时，才可用 `-x :app:downloadGeoFiles` 跳过下载。版本显示为 1.0.2，内部 versionCode 保持递增以支持覆盖前期测试包。构建细节参见源代码，旧实验版说明仅作为历史记录。
 
 ## 许可证与再分发
 
@@ -100,4 +108,4 @@ python3 -m unittest discover -s tests -v
 
 上游 GitHub Actions 工作流归档在 `docs/upstream-workflows/` 供参考，避免新仓库自动执行上游专用的版本更新或发布操作。
 
-本次发布构建实际使用本机已有 Gradle 8.11.1（上游 wrapper 为 8.10.2），保留上游 wrapper 配置；Geo 数据沿用 2026-10-18 已下载文件，核心与应用代码同步至上述最新提交。
+历史版本 v1.0.1 构建使用本机已有 Gradle 8.11.1（上游 wrapper 为 8.10.2），保留上游 wrapper 配置；Geo 数据沿用 2026-10-18 已下载文件，核心与应用代码同步至上述最新提交。
